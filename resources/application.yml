@@ -1,0 +1,21 @@
+server:
+   port: 8005
+   servlet.context-path: /cicak
+   shutdown.grace-period: 30s
+   error.whitelabel.enabled: false
+basedir: /app
+logging:
+   level:
+      ROOT: INFO
+      org.springframework: INFO
+      com.cck: DEBUG
+      org.jpos: DEBUG
+cck:
+   card:
+      enabled: true
+      binStore: resources/bin.prop
+   sm:
+      enabled: true
+      keyStore: resources/key.prop
+      lmk: resources/lmk
+ 

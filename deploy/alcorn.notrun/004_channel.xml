@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<channel-adaptor name="${groupName}_sock" logger="Q2" realm="sock">
+  <channel class="org.jpos.iso.channel.PostChannel" packager="org.jpos.iso.packager.GenericPackager" logger="Q2" realm="sock">
+    <property name="host" value="localhost" />
+    <property name="port" value="7000" />
+    <property name="packager-config" value="resources/cfg/iso87master.xml" />
+  </channel>
+  <in>${groupName}_sock_in</in>
+  <out>${groupName}_sock_out</out>
+  <max-connections>1</max-connections>
+  <max-attempt>100000</max-attempt>
+</channel-adaptor>

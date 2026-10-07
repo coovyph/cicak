@@ -1,0 +1,1113 @@
+{
+	"info": {
+		"_postman_id": "1cd1e318-eda4-4e13-9ad4-ee5a54c942cb",
+		"name": "cicak-aj",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5346028"
+	},
+	"item": [
+		{
+			"name": "GetKey",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"\r",
+							"function  formatDateComponent(value){\r",
+							"    if(value<10){\r",
+							"        return '0' + value;\r",
+							"    }\r",
+							"\r",
+							"    return value;\r",
+							"}\r",
+							"\r",
+							"\r",
+							"function zeropad(val,length){\r",
+							"    var padLength = length-val.length;\r",
+							"    if(padLength==0)return val;\r",
+							"    if(padLength<0){\r",
+							"        return val.substring(val.length-length,val.length);\r",
+							"    }\r",
+							"    var result = '';\r",
+							"    for(i=0;i<padLength;i++){\r",
+							"        result+='0';\r",
+							"    }\r",
+							"    return result + val;\r",
+							"}\r",
+							"\r",
+							"let current_date = new Date();\r",
+							"\r",
+							"let dtYyMMdd = (\"\" + current_date.getFullYear()).substring(2,4) + formatDateComponent(current_date.getMonth() + 1) + formatDateComponent(current_date.getDate());\r",
+							"let dtHHmmss = \"\" + formatDateComponent(current_date.getHours()) + formatDateComponent(current_date.getMinutes()) + formatDateComponent(current_date.getSeconds());\r",
+							"\r",
+							"\r",
+							"let gmtDateTime =\"\" + formatDateComponent(current_date.getUTCMonth() + 1) + formatDateComponent(current_date.getUTCDate()) + \r",
+							"                 formatDateComponent(current_date.getUTCHours()) +  formatDateComponent(current_date.getUTCMinutes()) +  formatDateComponent(current_date.getUTCSeconds());\r",
+							"\r",
+							"\r",
+							"let timeMillis = \"\" +  (current_date.getDate() * 24 * 60 * 60 * 1000 +   current_date.getHours() * 60 * 60 * 1000 +  current_date.getMinutes() * 60 * 1000 + current_date.getSeconds() * 1000 + current_date.getMilliseconds());\r",
+							"\r",
+							"\r",
+							"\r",
+							"var atc = pm.environment.get(\"atc\");\r",
+							"if(!atc){\r",
+							"    atc = 0;\r",
+							"}\r",
+							"atc++;\r",
+							"if(atc>65535){\r",
+							"    atc=1;\r",
+							"}\r",
+							"\r",
+							"pm.environment.set(\"atc\",atc);\r",
+							"\r",
+							"pm.environment.set(\"iccAtc\",zeropad(atc.toString(16),4));\r",
+							"pm.environment.set(\"gmtTranDateTime\",gmtDateTime);\r",
+							"pm.environment.set(\"fullDate\",dtYyMMdd);\r",
+							"pm.environment.set(\"localDate\",dtYyMMdd.substring(2,6));\r",
+							"pm.environment.set(\"localTime\",dtHHmmss);\r",
+							"\r",
+							"pm.environment.set(\"stan\",zeropad(timeMillis,6));\r",
+							"pm.environment.set(\"rrn\",zeropad(timeMillis,12));\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "Application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}/cicak/getKey/ZMK-atjgarj",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"cicak",
+						"getKey",
+						"ZMK-atjgarj"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SetKey",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"\r",
+							"function  formatDateComponent(value){\r",
+							"    if(value<10){\r",
+							"        return '0' + value;\r",
+							"    }\r",
+							"\r",
+							"    return value;\r",
+							"}\r",
+							"\r",
+							"\r",
+							"function zeropad(val,length){\r",
+							"    var padLength = length-val.length;\r",
+							"    if(padLength==0)return val;\r",
+							"    if(padLength<0){\r",
+							"        return val.substring(val.length-length,val.length);\r",
+							"    }\r",
+							"    var result = '';\r",
+							"    for(i=0;i<padLength;i++){\r",
+							"        result+='0';\r",
+							"    }\r",
+							"    return result + val;\r",
+							"}\r",
+							"\r",
+							"let current_date = new Date();\r",
+							"\r",
+							"let dtYyMMdd = (\"\" + current_date.getFullYear()).substring(2,4) + formatDateComponent(current_date.getMonth() + 1) + formatDateComponent(current_date.getDate());\r",
+							"let dtHHmmss = \"\" + formatDateComponent(current_date.getHours()) + formatDateComponent(current_date.getMinutes()) + formatDateComponent(current_date.getSeconds());\r",
+							"\r",
+							"\r",
+							"let gmtDateTime =\"\" + formatDateComponent(current_date.getUTCMonth() + 1) + formatDateComponent(current_date.getUTCDate()) + \r",
+							"                 formatDateComponent(current_date.getUTCHours()) +  formatDateComponent(current_date.getUTCMinutes()) +  formatDateComponent(current_date.getUTCSeconds());\r",
+							"\r",
+							"\r",
+							"let timeMillis = \"\" +  (current_date.getDate() * 24 * 60 * 60 * 1000 +   current_date.getHours() * 60 * 60 * 1000 +  current_date.getMinutes() * 60 * 1000 + current_date.getSeconds() * 1000 + current_date.getMilliseconds());\r",
+							"\r",
+							"\r",
+							"\r",
+							"var atc = pm.environment.get(\"atc\");\r",
+							"if(!atc){\r",
+							"    atc = 0;\r",
+							"}\r",
+							"atc++;\r",
+							"if(atc>65535){\r",
+							"    atc=1;\r",
+							"}\r",
+							"\r",
+							"pm.environment.set(\"atc\",atc);\r",
+							"\r",
+							"pm.environment.set(\"iccAtc\",zeropad(atc.toString(16),4));\r",
+							"pm.environment.set(\"gmtTranDateTime\",gmtDateTime);\r",
+							"pm.environment.set(\"fullDate\",dtYyMMdd);\r",
+							"pm.environment.set(\"localDate\",dtYyMMdd.substring(2,6));\r",
+							"pm.environment.set(\"localTime\",dtHHmmss);\r",
+							"\r",
+							"pm.environment.set(\"stan\",zeropad(timeMillis,6));\r",
+							"pm.environment.set(\"rrn\",zeropad(timeMillis,12));\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "Application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"key\":\"F8FEDFC11C9E4091404FD38AE3BF6EC1\",\r\n  \"keyType\":\"IMK-AC\",\r\n  \"name\":\"IMK-AC-TEST123\"\r\n}"
+				},
+				"url": {
+					"raw": "{{url}}/cicak/setKey",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"cicak",
+						"setKey"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "BalanceInquiry",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"\r",
+							"function  formatDateComponent(value){\r",
+							"    if(value<10){\r",
+							"        return '0' + value;\r",
+							"    }\r",
+							"\r",
+							"    return value;\r",
+							"}\r",
+							"\r",
+							"\r",
+							"function zeropad(val,length){\r",
+							"    var padLength = length-val.length;\r",
+							"    if(padLength==0)return val;\r",
+							"    if(padLength<0){\r",
+							"        return val.substring(val.length-length,val.length);\r",
+							"    }\r",
+							"    var result = '';\r",
+							"    for(i=0;i<padLength;i++){\r",
+							"        result+='0';\r",
+							"    }\r",
+							"    return result + val;\r",
+							"}\r",
+							"\r",
+							"let current_date = new Date();\r",
+							"\r",
+							"let dtYyMMdd = (\"\" + current_date.getFullYear()).substring(2,4) + formatDateComponent(current_date.getMonth() + 1) + formatDateComponent(current_date.getDate());\r",
+							"let dtHHmmss = \"\" + formatDateComponent(current_date.getHours()) + formatDateComponent(current_date.getMinutes()) + formatDateComponent(current_date.getSeconds());\r",
+							"\r",
+							"\r",
+							"let gmtDateTime =\"\" + formatDateComponent(current_date.getUTCMonth() + 1) + formatDateComponent(current_date.getUTCDate()) + \r",
+							"                 formatDateComponent(current_date.getUTCHours()) +  formatDateComponent(current_date.getUTCMinutes()) +  formatDateComponent(current_date.getUTCSeconds());\r",
+							"\r",
+							"\r",
+							"let timeMillis = \"\" +  (current_date.getDate() * 24 * 60 * 60 * 1000 +   current_date.getHours() * 60 * 60 * 1000 +  current_date.getMinutes() * 60 * 1000 + current_date.getSeconds() * 1000 + current_date.getMilliseconds());\r",
+							"\r",
+							"\r",
+							"\r",
+							"var atc = pm.environment.get(\"atc\");\r",
+							"if(!atc){\r",
+							"    atc = 0;\r",
+							"}\r",
+							"atc++;\r",
+							"if(atc>65535){\r",
+							"    atc=1;\r",
+							"}\r",
+							"\r",
+							"pm.environment.set(\"atc\",atc);\r",
+							"\r",
+							"pm.environment.set(\"iccAtc\",zeropad(atc.toString(16),4));\r",
+							"pm.environment.set(\"gmtTranDateTime\",gmtDateTime);\r",
+							"pm.environment.set(\"fullDate\",dtYyMMdd);\r",
+							"pm.environment.set(\"localDate\",dtYyMMdd.substring(2,6));\r",
+							"pm.environment.set(\"localTime\",dtHHmmss);\r",
+							"\r",
+							"pm.environment.set(\"stan\",zeropad(timeMillis,6));\r",
+							"pm.environment.set(\"rrn\",zeropad(timeMillis,12));\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "Application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"mti\": \"0200\",\r\n    \"timeout\": 5000,\r\n    \"headers\": {\r\n        \"interchange\": \"{{interchange}}\"\r\n    },\r\n    \"body\": {\r\n        \"f2\": \"{{pan}}\",\r\n        \"f3\": \"301000\",\r\n        \"f4\": \"000000000000\",\r\n        \"f7\": \"{{gmtTranDateTime}}\",\r\n        \"f11\": \"{{stan}}\",\r\n        \"f12\": \"{{localTime}}\",\r\n        \"f13\": \"{{localDate}}\",\r\n        \"f15\": \"{{localDate}}\",\r\n        \"f18\": \"6011\",\r\n        \"f22\": \"051\",\r\n        \"f25\": \"00\",\r\n        \"f32\": \"{{acq_id}}\",\r\n        \"f33\": \"{{frwd_id}}\",\r\n        \"f35\": \"{{track2}}\",\r\n        \"f37\": \"{{rrn}}\",\r\n        \"f41\": \"10000001\",\r\n        \"f42\": \"ATM JAG10000001\",\r\n        \"f43\": \"GATOT SUBROTO                    JBR IDN\",\r\n        \"f49\": \"360\",\r\n        \"p52\": \"123456\",\r\n        \"i55\": {\r\n            \"mkac\":\"{{mkac}}\",\r\n            \"format\":\"B\",\r\n            \"v82\":\"7400\",\r\n            \"v9F27\":\"80\",\r\n            \"v9F09\":\"0101\",\r\n            \"v5F34\":\"00\",\r\n            \"v9F10\":\"0101A0008000006A6303F80000000000000000000000000000000000\",\r\n            \"v9A\":\"{{fullDate}}\",\r\n            \"v84\":\"A0000006021010\",            \r\n            \"v9F36\":\"{{iccAtc}}\"\r\n        }\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "{{url}}/call",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"call"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "BalanceInquiryReversal",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"\r",
+							"function  formatDateComponent(value){\r",
+							"    if(value<10){\r",
+							"        return '0' + value;\r",
+							"    }\r",
+							"\r",
+							"    return value;\r",
+							"}\r",
+							"\r",
+							"\r",
+							"function zeropad(val,length){\r",
+							"    var padLength = length-val.length;\r",
+							"    if(padLength==0)return val;\r",
+							"    if(padLength<0){\r",
+							"        return val.substring(val.length-length,val.length);\r",
+							"    }\r",
+							"    var result = '';\r",
+							"    for(i=0;i<padLength;i++){\r",
+							"        result+='0';\r",
+							"    }\r",
+							"    return result + val;\r",
+							"}\r",
+							"\r",
+							"let current_date = new Date();\r",
+							"\r",
+							"let dtYyMMdd = (\"\" + current_date.getFullYear()).substring(2,4) + formatDateComponent(current_date.getMonth() + 1) + formatDateComponent(current_date.getDate());\r",
+							"let dtHHmmss = \"\" + formatDateComponent(current_date.getHours()) + formatDateComponent(current_date.getMinutes()) + formatDateComponent(current_date.getSeconds());\r",
+							"\r",
+							"\r",
+							"let gmtDateTime =\"\" + formatDateComponent(current_date.getUTCMonth() + 1) + formatDateComponent(current_date.getUTCDate()) + \r",
+							"                 formatDateComponent(current_date.getUTCHours()) +  formatDateComponent(current_date.getUTCMinutes()) +  formatDateComponent(current_date.getUTCSeconds());\r",
+							"\r",
+							"\r",
+							"let timeMillis = \"\" +  (current_date.getDate() * 24 * 60 * 60 * 1000 +   current_date.getHours() * 60 * 60 * 1000 +  current_date.getMinutes() * 60 * 1000 + current_date.getSeconds() * 1000 + current_date.getMilliseconds());\r",
+							"\r",
+							"let originalDataElement = \"0200\" + pm.environment.get(\"stan\") + pm.environment.get(\"gmtTranDateTime\") + \r",
+							"                          zeropad(pm.environment.get(\"acq_id\"),11) + zeropad(pm.environment.get(\"frwd_id\"),11);\r",
+							"\r",
+							"pm.environment.set(\"revGmtTranDateTime\",gmtDateTime);\r",
+							"pm.environment.set(\"originalDataElement\",originalDataElement);\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "Application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"mti\": \"0400\",\r\n    \"timeout\": 5000,\r\n    \"headers\": {\r\n        \"interchange\": \"{{interchange}}\"\r\n    },\r\n    \"body\": {\r\n        \"f2\": \"{{pan}}\",\r\n        \"f3\": \"301000\",\r\n        \"f4\": \"0\",\r\n        \"f7\": \"{{revGmtTranDateTime}}\",\r\n        \"f11\": \"{{stan}}\",\r\n        \"f12\": \"{{localTime}}\",\r\n        \"f13\": \"{{localDate}}\",\r\n        \"f15\": \"{{localDate}}\",\r\n        \"f18\": \"6011\",\r\n        \"f22\": \"051\",\r\n        \"f25\": \"00\",\r\n        \"f32\": \"{{acq_id}}\",\r\n        \"f33\": \"{{frwd_id}}\",\r\n        \"f35\": \"{{track2}}\",\r\n        \"f37\": \"{{rrn}}\",\r\n        \"f41\": \"10000001\",\r\n        \"f42\": \"ATM JAG10000001\",\r\n        \"f43\": \"GATOT SUBROTO                    JBR IDN\",\r\n        \"f49\": \"360\",\r\n        \"f90\":\"{{originalDataElement}}\",\r\n        \"f95\":\"000000000000000000000000000000000000000000\"\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "{{url}}/call",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"call"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Withdrawal",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"\r",
+							"function  formatDateComponent(value){\r",
+							"    if(value<10){\r",
+							"        return '0' + value;\r",
+							"    }\r",
+							"\r",
+							"    return value;\r",
+							"}\r",
+							"\r",
+							"\r",
+							"function zeropad(val,length){\r",
+							"    var padLength = length-val.length;\r",
+							"    if(padLength==0)return val;\r",
+							"    if(padLength<0){\r",
+							"        return val.substring(val.length-length,val.length);\r",
+							"    }\r",
+							"    var result = '';\r",
+							"    for(i=0;i<padLength;i++){\r",
+							"        result+='0';\r",
+							"    }\r",
+							"    return result + val;\r",
+							"}\r",
+							"\r",
+							"let current_date = new Date();\r",
+							"\r",
+							"let dtYyMMdd = (\"\" + current_date.getFullYear()).substring(2,4) + formatDateComponent(current_date.getMonth() + 1) + formatDateComponent(current_date.getDate());\r",
+							"let dtHHmmss = \"\" + formatDateComponent(current_date.getHours()) + formatDateComponent(current_date.getMinutes()) + formatDateComponent(current_date.getSeconds());\r",
+							"\r",
+							"\r",
+							"let gmtDateTime =\"\" + formatDateComponent(current_date.getUTCMonth() + 1) + formatDateComponent(current_date.getUTCDate()) + \r",
+							"                 formatDateComponent(current_date.getUTCHours()) +  formatDateComponent(current_date.getUTCMinutes()) +  formatDateComponent(current_date.getUTCSeconds());\r",
+							"\r",
+							"\r",
+							"let timeMillis = \"\" +  (current_date.getDate() * 24 * 60 * 60 * 1000 +   current_date.getHours() * 60 * 60 * 1000 +  current_date.getMinutes() * 60 * 1000 + current_date.getSeconds() * 1000 + current_date.getMilliseconds());\r",
+							"\r",
+							"\r",
+							"\r",
+							"var atc = pm.environment.get(\"atc\");\r",
+							"if(!atc){\r",
+							"    atc = 0;\r",
+							"}\r",
+							"atc++;\r",
+							"if(atc>65535){\r",
+							"    atc=1;\r",
+							"}\r",
+							"\r",
+							"pm.environment.set(\"atc\",atc);\r",
+							"\r",
+							"pm.environment.set(\"iccAtc\",zeropad(atc.toString(16),4));\r",
+							"pm.environment.set(\"gmtTranDateTime\",gmtDateTime);\r",
+							"pm.environment.set(\"fullDate\",dtYyMMdd);\r",
+							"pm.environment.set(\"localDate\",dtYyMMdd.substring(2,6));\r",
+							"pm.environment.set(\"localTime\",dtHHmmss);\r",
+							"\r",
+							"pm.environment.set(\"stan\",zeropad(timeMillis,6));\r",
+							"pm.environment.set(\"rrn\",zeropad(timeMillis,12));\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "Application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"mti\": \"0200\",\r\n    \"timeout\": 5000,\r\n    \"headers\": {\r\n        \"interchange\": \"{{interchange}}\"\r\n    },\r\n    \"body\": {\r\n        \"f2\": \"{{pan}}\",\r\n        \"f3\": \"011000\",\r\n        \"f4\": \"000005000000\",\r\n        \"f7\": \"{{gmtTranDateTime}}\",\r\n        \"f11\": \"{{stan}}\",\r\n        \"f12\": \"{{localTime}}\",\r\n        \"f13\": \"{{localDate}}\",\r\n        \"f15\": \"{{localDate}}\",\r\n        \"f18\": \"6011\",\r\n        \"f22\": \"051\",\r\n        \"f25\": \"00\",\r\n        \"f32\": \"{{acq_id}}\",\r\n        \"f33\": \"{{frwd_id}}\",\r\n        \"f35\": \"{{track2}}\",\r\n        \"f37\": \"{{rrn}}\",\r\n        \"f41\": \"10000001\",\r\n        \"f42\": \"ATM JAG10000001\",\r\n        \"f43\": \"GATOT SUBROTO                    JBR IDN\",\r\n        \"f49\": \"360\",\r\n        \"p52\": \"123456\",\r\n        \"i55\": {\r\n            \"mkac\":\"{{mkac}}\",\r\n            \"format\":\"B\",\r\n            \"v82\":\"7400\",\r\n            \"v9F27\":\"80\",\r\n            \"v9F09\":\"0101\",\r\n            \"v5F34\":\"00\",\r\n            \"v9F10\":\"0101A0008000006A6303F80000000000000000000000000000000000\",\r\n            \"v9A\":\"{{fullDate}}\",\r\n            \"v84\":\"A0000006021010\",            \r\n            \"v9F36\":\"{{iccAtc}}\"\r\n        }\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "{{url}}/call",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"call"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "WithdrawalReversal",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"\r",
+							"function  formatDateComponent(value){\r",
+							"    if(value<10){\r",
+							"        return '0' + value;\r",
+							"    }\r",
+							"\r",
+							"    return value;\r",
+							"}\r",
+							"\r",
+							"\r",
+							"function zeropad(val,length){\r",
+							"    var padLength = length-val.length;\r",
+							"    if(padLength==0)return val;\r",
+							"    if(padLength<0){\r",
+							"        return val.substring(val.length-length,val.length);\r",
+							"    }\r",
+							"    var result = '';\r",
+							"    for(i=0;i<padLength;i++){\r",
+							"        result+='0';\r",
+							"    }\r",
+							"    return result + val;\r",
+							"}\r",
+							"\r",
+							"let current_date = new Date();\r",
+							"\r",
+							"let dtYyMMdd = (\"\" + current_date.getFullYear()).substring(2,4) + formatDateComponent(current_date.getMonth() + 1) + formatDateComponent(current_date.getDate());\r",
+							"let dtHHmmss = \"\" + formatDateComponent(current_date.getHours()) + formatDateComponent(current_date.getMinutes()) + formatDateComponent(current_date.getSeconds());\r",
+							"\r",
+							"\r",
+							"let gmtDateTime =\"\" + formatDateComponent(current_date.getUTCMonth() + 1) + formatDateComponent(current_date.getUTCDate()) + \r",
+							"                 formatDateComponent(current_date.getUTCHours()) +  formatDateComponent(current_date.getUTCMinutes()) +  formatDateComponent(current_date.getUTCSeconds());\r",
+							"\r",
+							"\r",
+							"let timeMillis = \"\" +  (current_date.getDate() * 24 * 60 * 60 * 1000 +   current_date.getHours() * 60 * 60 * 1000 +  current_date.getMinutes() * 60 * 1000 + current_date.getSeconds() * 1000 + current_date.getMilliseconds());\r",
+							"\r",
+							"let originalDataElement = \"0200\" + pm.environment.get(\"stan\") + pm.environment.get(\"gmtTranDateTime\") + \r",
+							"                          zeropad(pm.environment.get(\"acq_id\"),11) + zeropad(pm.environment.get(\"frwd_id\"),11);\r",
+							"\r",
+							"pm.environment.set(\"revGmtTranDateTime\",gmtDateTime);\r",
+							"pm.environment.set(\"originalDataElement\",originalDataElement);\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "Application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"mti\": \"0400\",\r\n    \"timeout\": 5000,\r\n    \"headers\": {\r\n        \"interchange\": \"{{interchange}}\"\r\n    },\r\n    \"body\": {\r\n        \"f2\": \"{{pan}}\",\r\n        \"f3\": \"011000\",\r\n        \"f4\": \"000005000000\",\r\n        \"f7\": \"{{revGmtTranDateTime}}\",\r\n        \"f11\": \"{{stan}}\",\r\n        \"f12\": \"{{localTime}}\",\r\n        \"f13\": \"{{localDate}}\",\r\n        \"f15\": \"{{localDate}}\",\r\n        \"f18\": \"6011\",\r\n        \"f22\": \"051\",\r\n        \"f25\": \"00\",\r\n        \"f32\": \"{{acq_id}}\",\r\n        \"f33\": \"{{frwd_id}}\",\r\n        \"f35\": \"{{track2}}\",\r\n        \"f37\": \"{{rrn}}\",\r\n        \"f41\": \"10000001\",\r\n        \"f42\": \"ATM JAG10000001\",\r\n        \"f43\": \"GATOT SUBROTO                    JBR IDN\",\r\n        \"f49\": \"360\",\r\n        \"f90\":\"{{originalDataElement}}\",\r\n        \"f95\":\"000000000000000000000000000000000000000000\"\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "{{url}}/call",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"call"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TransferIssBene",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"\r",
+							"function  formatDateComponent(value){\r",
+							"    if(value<10){\r",
+							"        return '0' + value;\r",
+							"    }\r",
+							"\r",
+							"    return value;\r",
+							"}\r",
+							"\r",
+							"\r",
+							"function zeropad(val,length){\r",
+							"    var padLength = length-val.length;\r",
+							"    if(padLength==0)return val;\r",
+							"    if(padLength<0){\r",
+							"        return val.substring(val.length-length,val.length);\r",
+							"    }\r",
+							"    var result = '';\r",
+							"    for(i=0;i<padLength;i++){\r",
+							"        result+='0';\r",
+							"    }\r",
+							"    return result + val;\r",
+							"}\r",
+							"\r",
+							"let current_date = new Date();\r",
+							"\r",
+							"let dtYyMMdd = (\"\" + current_date.getFullYear()).substring(2,4) + formatDateComponent(current_date.getMonth() + 1) + formatDateComponent(current_date.getDate());\r",
+							"let dtHHmmss = \"\" + formatDateComponent(current_date.getHours()) + formatDateComponent(current_date.getMinutes()) + formatDateComponent(current_date.getSeconds());\r",
+							"\r",
+							"\r",
+							"let gmtDateTime =\"\" + formatDateComponent(current_date.getUTCMonth() + 1) + formatDateComponent(current_date.getUTCDate()) + \r",
+							"                 formatDateComponent(current_date.getUTCHours()) +  formatDateComponent(current_date.getUTCMinutes()) +  formatDateComponent(current_date.getUTCSeconds());\r",
+							"\r",
+							"\r",
+							"let timeMillis = \"\" +  (current_date.getDate() * 24 * 60 * 60 * 1000 +   current_date.getHours() * 60 * 60 * 1000 +  current_date.getMinutes() * 60 * 1000 + current_date.getSeconds() * 1000 + current_date.getMilliseconds());\r",
+							"\r",
+							"\r",
+							"\r",
+							"var atc = pm.environment.get(\"atc\");\r",
+							"if(!atc){\r",
+							"    atc = 0;\r",
+							"}\r",
+							"atc++;\r",
+							"if(atc>65535){\r",
+							"    atc=1;\r",
+							"}\r",
+							"\r",
+							"pm.environment.set(\"atc\",atc);\r",
+							"\r",
+							"pm.environment.set(\"iccAtc\",zeropad(atc.toString(16),4));\r",
+							"pm.environment.set(\"gmtTranDateTime\",gmtDateTime);\r",
+							"pm.environment.set(\"fullDate\",dtYyMMdd);\r",
+							"pm.environment.set(\"localDate\",dtYyMMdd.substring(2,6));\r",
+							"pm.environment.set(\"localTime\",dtHHmmss);\r",
+							"\r",
+							"pm.environment.set(\"stan\",zeropad(timeMillis,6));\r",
+							"pm.environment.set(\"rrn\",zeropad(timeMillis,12));\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "Application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"mti\": \"0200\",\r\n    \"timeout\": 5000,\r\n    \"headers\": {\r\n        \"interchange\": \"{{interchange}}\"\r\n    },\r\n    \"body\": {\r\n        \"f2\": \"{{pan}}\",\r\n        \"f3\": \"401000\",\r\n        \"f4\": \"5000000\",\r\n        \"f7\": \"{{gmtTranDateTime}}\",\r\n        \"f11\": \"{{stan}}\",\r\n        \"f12\": \"{{localTime}}\",\r\n        \"f13\": \"{{localDate}}\",\r\n        \"f15\": \"{{localDate}}\",\r\n        \"f18\": \"6011\",\r\n        \"f22\": \"051\",\r\n        \"f32\": \"{{acq_id}}\",\r\n        \"f33\": \"{{frwd_id}}\",\r\n        \"f35\": \"{{track2}}\",\r\n        \"f37\": \"{{rrn}}\",\r\n        \"f41\": \"10000001\",\r\n        \"f42\": \"ATM JAG10000001\",\r\n        \"f43\": \"GATOT SUBROTO                    JBR IDN\",\r\n        \"f48\":\"MAY MAY PADA                  1234567890                                    \",\r\n        \"f49\": \"360\",\r\n        \"p52\":\"123456\",\r\n        \"i55\": {\r\n            \"mkac\":\"{{mkac}}\",\r\n            \"format\":\"B\",\r\n            \"v82\":\"7400\",\r\n            \"v9F27\":\"80\",\r\n            \"v9F09\":\"0101\",\r\n            \"v5F34\":\"00\",\r\n            \"v9F10\":\"0101A0008000006A6303F80000000000000000000000000000000000\",\r\n            \"v9A\":\"{{fullDate}}\",\r\n            \"v84\":\"A0000006021010\",            \r\n            \"v9F36\":\"{{iccAtc}}\"\r\n        },\r\n        \"f100\":\"542\",\r\n        \"f103\":\"7809981200998\",\r\n        \"f125\":\"1\",\r\n        \"f127\":\"542\"\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "{{url}}/call",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"call"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TransferIssBeneReversal",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"\r",
+							"function  formatDateComponent(value){\r",
+							"    if(value<10){\r",
+							"        return '0' + value;\r",
+							"    }\r",
+							"\r",
+							"    return value;\r",
+							"}\r",
+							"\r",
+							"\r",
+							"function zeropad(val,length){\r",
+							"    var padLength = length-val.length;\r",
+							"    if(padLength==0)return val;\r",
+							"    if(padLength<0){\r",
+							"        return val.substring(val.length-length,val.length);\r",
+							"    }\r",
+							"    var result = '';\r",
+							"    for(i=0;i<padLength;i++){\r",
+							"        result+='0';\r",
+							"    }\r",
+							"    return result + val;\r",
+							"}\r",
+							"\r",
+							"let current_date = new Date();\r",
+							"\r",
+							"let dtYyMMdd = (\"\" + current_date.getFullYear()).substring(2,4) + formatDateComponent(current_date.getMonth() + 1) + formatDateComponent(current_date.getDate());\r",
+							"let dtHHmmss = \"\" + formatDateComponent(current_date.getHours()) + formatDateComponent(current_date.getMinutes()) + formatDateComponent(current_date.getSeconds());\r",
+							"\r",
+							"\r",
+							"let gmtDateTime =\"\" + formatDateComponent(current_date.getUTCMonth() + 1) + formatDateComponent(current_date.getUTCDate()) + \r",
+							"                 formatDateComponent(current_date.getUTCHours()) +  formatDateComponent(current_date.getUTCMinutes()) +  formatDateComponent(current_date.getUTCSeconds());\r",
+							"\r",
+							"\r",
+							"let timeMillis = \"\" +  (current_date.getDate() * 24 * 60 * 60 * 1000 +   current_date.getHours() * 60 * 60 * 1000 +  current_date.getMinutes() * 60 * 1000 + current_date.getSeconds() * 1000 + current_date.getMilliseconds());\r",
+							"\r",
+							"let originalDataElement = \"0200\" + pm.environment.get(\"stan\") + pm.environment.get(\"gmtTranDateTime\") + \r",
+							"                          zeropad(pm.environment.get(\"acq_id\"),11) + zeropad(pm.environment.get(\"frwd_id\"),11);\r",
+							"\r",
+							"pm.environment.set(\"revGmtTranDateTime\",gmtDateTime);\r",
+							"pm.environment.set(\"originalDataElement\",originalDataElement);\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "Application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"mti\": \"0400\",\r\n    \"timeout\": 5000,\r\n    \"headers\": {\r\n        \"interchange\": \"{{interchange}}\"\r\n    },\r\n    \"body\": {\r\n        \"f2\": \"{{pan}}\",\r\n        \"f3\": \"401000\",\r\n        \"f4\": \"5000000\",\r\n        \"f7\": \"{{revGmtTranDateTime}}\",\r\n        \"f11\": \"{{stan}}\",\r\n        \"f12\": \"{{localTime}}\",\r\n        \"f13\": \"{{localDate}}\",\r\n        \"f15\": \"{{localDate}}\",\r\n        \"f18\": \"6011\",\r\n        \"f32\": \"{{acq_id}}\",\r\n        \"f33\": \"{{frwd_id}}\",\r\n        \"f35\": \"{{track2}}\",\r\n        \"f37\": \"{{rrn}}\",\r\n        \"f41\": \"10000001\",\r\n        \"f42\": \"ATM JAG10000001\",\r\n        \"f48\":\"MAY MAY PADA                  1234567890                                    \",\r\n        \"f49\": \"360\",\r\n        \"f90\":\"{{originalDataElement}}\",\r\n        \"f95\":\"000000000000000000000000000000000000000000\",\r\n        \"f100\":\"542\",\r\n        \"f103\":\"7809981200998\",\r\n        \"f125\":\"1\",\r\n        \"f127\":\"542\"\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "{{url}}/call",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"call"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TransferIssOnly",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"\r",
+							"function  formatDateComponent(value){\r",
+							"    if(value<10){\r",
+							"        return '0' + value;\r",
+							"    }\r",
+							"\r",
+							"    return value;\r",
+							"}\r",
+							"\r",
+							"\r",
+							"function zeropad(val,length){\r",
+							"    var padLength = length-val.length;\r",
+							"    if(padLength==0)return val;\r",
+							"    if(padLength<0){\r",
+							"        return val.substring(val.length-length,val.length);\r",
+							"    }\r",
+							"    var result = '';\r",
+							"    for(i=0;i<padLength;i++){\r",
+							"        result+='0';\r",
+							"    }\r",
+							"    return result + val;\r",
+							"}\r",
+							"\r",
+							"let current_date = new Date();\r",
+							"\r",
+							"let dtYyMMdd = (\"\" + current_date.getFullYear()).substring(2,4) + formatDateComponent(current_date.getMonth() + 1) + formatDateComponent(current_date.getDate());\r",
+							"let dtHHmmss = \"\" + formatDateComponent(current_date.getHours()) + formatDateComponent(current_date.getMinutes()) + formatDateComponent(current_date.getSeconds());\r",
+							"\r",
+							"\r",
+							"let gmtDateTime =\"\" + formatDateComponent(current_date.getUTCMonth() + 1) + formatDateComponent(current_date.getUTCDate()) + \r",
+							"                 formatDateComponent(current_date.getUTCHours()) +  formatDateComponent(current_date.getUTCMinutes()) +  formatDateComponent(current_date.getUTCSeconds());\r",
+							"\r",
+							"\r",
+							"let timeMillis = \"\" +  (current_date.getDate() * 24 * 60 * 60 * 1000 +   current_date.getHours() * 60 * 60 * 1000 +  current_date.getMinutes() * 60 * 1000 + current_date.getSeconds() * 1000 + current_date.getMilliseconds());\r",
+							"\r",
+							"\r",
+							"\r",
+							"var atc = pm.environment.get(\"atc\");\r",
+							"if(!atc){\r",
+							"    atc = 0;\r",
+							"}\r",
+							"atc++;\r",
+							"if(atc>65535){\r",
+							"    atc=1;\r",
+							"}\r",
+							"\r",
+							"pm.environment.set(\"atc\",atc);\r",
+							"\r",
+							"pm.environment.set(\"iccAtc\",zeropad(atc.toString(16),4));\r",
+							"pm.environment.set(\"gmtTranDateTime\",gmtDateTime);\r",
+							"pm.environment.set(\"fullDate\",dtYyMMdd);\r",
+							"pm.environment.set(\"localDate\",dtYyMMdd.substring(2,6));\r",
+							"pm.environment.set(\"localTime\",dtHHmmss);\r",
+							"\r",
+							"pm.environment.set(\"stan\",zeropad(timeMillis,6));\r",
+							"pm.environment.set(\"rrn\",zeropad(timeMillis,12));\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "Application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"mti\": \"0200\",\r\n    \"timeout\": 5000,\r\n    \"headers\": {\r\n        \"interchange\": \"{{interchange}}\"\r\n    },\r\n    \"body\": {\r\n        \"f2\": \"{{pan}}\",\r\n        \"f3\": \"401000\",\r\n        \"f4\": \"5000000\",\r\n        \"f7\": \"{{gmtTranDateTime}}\",\r\n        \"f11\": \"{{stan}}\",\r\n        \"f12\": \"{{localTime}}\",\r\n        \"f13\": \"{{localDate}}\",\r\n        \"f15\": \"{{localDate}}\",\r\n        \"f18\": \"6011\",\r\n        \"f22\": \"051\",\r\n        \"f32\": \"{{acq_id}}\",\r\n        \"f33\": \"{{frwd_id}}\",\r\n        \"f35\": \"{{track2}}\",\r\n        \"f37\": \"{{rrn}}\",\r\n        \"f41\": \"10000001\",\r\n        \"f42\": \"ATM JAG10000001\",\r\n        \"f43\": \"GATOT SUBROTO                    JBR IDN\",\r\n        \"f48\":\"MAY MAY PADA                  1234567890                                    \",\r\n        \"f49\": \"360\",\r\n        \"p52\":\"123456\",\r\n        \"i55\": {\r\n            \"mkac\":\"{{mkac}}\",\r\n            \"format\":\"B\",\r\n            \"v82\":\"7400\",\r\n            \"v9F27\":\"80\",\r\n            \"v9F09\":\"0101\",\r\n            \"v5F34\":\"00\",\r\n            \"v9F10\":\"0101A0008000006A6303F80000000000000000000000000000000000\",\r\n            \"v9A\":\"{{fullDate}}\",\r\n            \"v84\":\"A0000006021010\",            \r\n            \"v9F36\":\"{{iccAtc}}\"\r\n        },\r\n        \"f100\":\"542\",\r\n        \"f103\":\"7809981200998\",\r\n        \"f125\":\"1\",\r\n        \"f127\":\"097\"\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "{{url}}/call",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"call"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TransferIssOnlyReversal",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"\r",
+							"function  formatDateComponent(value){\r",
+							"    if(value<10){\r",
+							"        return '0' + value;\r",
+							"    }\r",
+							"\r",
+							"    return value;\r",
+							"}\r",
+							"\r",
+							"\r",
+							"function zeropad(val,length){\r",
+							"    var padLength = length-val.length;\r",
+							"    if(padLength==0)return val;\r",
+							"    if(padLength<0){\r",
+							"        return val.substring(val.length-length,val.length);\r",
+							"    }\r",
+							"    var result = '';\r",
+							"    for(i=0;i<padLength;i++){\r",
+							"        result+='0';\r",
+							"    }\r",
+							"    return result + val;\r",
+							"}\r",
+							"\r",
+							"let current_date = new Date();\r",
+							"\r",
+							"let dtYyMMdd = (\"\" + current_date.getFullYear()).substring(2,4) + formatDateComponent(current_date.getMonth() + 1) + formatDateComponent(current_date.getDate());\r",
+							"let dtHHmmss = \"\" + formatDateComponent(current_date.getHours()) + formatDateComponent(current_date.getMinutes()) + formatDateComponent(current_date.getSeconds());\r",
+							"\r",
+							"\r",
+							"let gmtDateTime =\"\" + formatDateComponent(current_date.getUTCMonth() + 1) + formatDateComponent(current_date.getUTCDate()) + \r",
+							"                 formatDateComponent(current_date.getUTCHours()) +  formatDateComponent(current_date.getUTCMinutes()) +  formatDateComponent(current_date.getUTCSeconds());\r",
+							"\r",
+							"\r",
+							"let timeMillis = \"\" +  (current_date.getDate() * 24 * 60 * 60 * 1000 +   current_date.getHours() * 60 * 60 * 1000 +  current_date.getMinutes() * 60 * 1000 + current_date.getSeconds() * 1000 + current_date.getMilliseconds());\r",
+							"\r",
+							"let originalDataElement = \"0200\" + pm.environment.get(\"stan\") + pm.environment.get(\"gmtTranDateTime\") + \r",
+							"                          zeropad(pm.environment.get(\"acq_id\"),11) + zeropad(pm.environment.get(\"frwd_id\"),11);\r",
+							"\r",
+							"pm.environment.set(\"revGmtTranDateTime\",gmtDateTime);\r",
+							"pm.environment.set(\"originalDataElement\",originalDataElement);\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "Application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"mti\": \"0400\",\r\n    \"timeout\": 5000,\r\n    \"headers\": {\r\n        \"interchange\": \"{{interchange}}\"\r\n    },\r\n    \"body\": {\r\n        \"f2\": \"{{pan}}\",\r\n        \"f3\": \"401000\",\r\n        \"f4\": \"5000000\",\r\n        \"f7\": \"{{revGmtTranDateTime}}\",\r\n        \"f11\": \"{{stan}}\",\r\n        \"f12\": \"{{localTime}}\",\r\n        \"f13\": \"{{localDate}}\",\r\n        \"f15\": \"{{localDate}}\",\r\n        \"f18\": \"6011\",\r\n        \"f32\": \"{{acq_id}}\",\r\n        \"f33\": \"{{frwd_id}}\",\r\n        \"f35\": \"{{track2}}\",\r\n        \"f37\": \"{{rrn}}\",\r\n        \"f41\": \"10000001\",\r\n        \"f42\": \"ATM JAG10000001\",\r\n        \"f48\":\"MAY MAY PADA                  1234567890                                    \",\r\n        \"f49\": \"360\",\r\n        \"f90\":\"{{originalDataElement}}\",\r\n        \"f95\":\"000000000000000000000000000000000000000000\",\r\n        \"f100\":\"542\",\r\n        \"f103\":\"7809981200998\",\r\n        \"f125\":\"1\",\r\n        \"f127\":\"097\"\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "{{url}}/call",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"call"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "BeneInquiry",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"\r",
+							"function  formatDateComponent(value){\r",
+							"    if(value<10){\r",
+							"        return '0' + value;\r",
+							"    }\r",
+							"\r",
+							"    return value;\r",
+							"}\r",
+							"\r",
+							"\r",
+							"function zeropad(val,length){\r",
+							"    var padLength = length-val.length;\r",
+							"    if(padLength==0)return val;\r",
+							"    if(padLength<0){\r",
+							"        return val.substring(val.length-length,val.length);\r",
+							"    }\r",
+							"    var result = '';\r",
+							"    for(i=0;i<padLength;i++){\r",
+							"        result+='0';\r",
+							"    }\r",
+							"    return result + val;\r",
+							"}\r",
+							"\r",
+							"let current_date = new Date();\r",
+							"\r",
+							"let dtYyMMdd = (\"\" + current_date.getFullYear()).substring(2,4) + formatDateComponent(current_date.getMonth() + 1) + formatDateComponent(current_date.getDate());\r",
+							"let dtHHmmss = \"\" + formatDateComponent(current_date.getHours()) + formatDateComponent(current_date.getMinutes()) + formatDateComponent(current_date.getSeconds());\r",
+							"\r",
+							"\r",
+							"let gmtDateTime =\"\" + formatDateComponent(current_date.getUTCMonth() + 1) + formatDateComponent(current_date.getUTCDate()) + \r",
+							"                 formatDateComponent(current_date.getUTCHours()) +  formatDateComponent(current_date.getUTCMinutes()) +  formatDateComponent(current_date.getUTCSeconds());\r",
+							"\r",
+							"\r",
+							"let timeMillis = \"\" +  (current_date.getDate() * 24 * 60 * 60 * 1000 +   current_date.getHours() * 60 * 60 * 1000 +  current_date.getMinutes() * 60 * 1000 + current_date.getSeconds() * 1000 + current_date.getMilliseconds());\r",
+							"\r",
+							"\r",
+							"\r",
+							"var atc = pm.environment.get(\"atc\");\r",
+							"if(!atc){\r",
+							"    atc = 0;\r",
+							"}\r",
+							"atc++;\r",
+							"if(atc>65535){\r",
+							"    atc=1;\r",
+							"}\r",
+							"\r",
+							"pm.environment.set(\"atc\",atc);\r",
+							"\r",
+							"pm.environment.set(\"iccAtc\",zeropad(atc.toString(16),4));\r",
+							"pm.environment.set(\"gmtTranDateTime\",gmtDateTime);\r",
+							"pm.environment.set(\"fullDate\",dtYyMMdd);\r",
+							"pm.environment.set(\"localDate\",dtYyMMdd.substring(2,6));\r",
+							"pm.environment.set(\"localTime\",dtHHmmss);\r",
+							"\r",
+							"pm.environment.set(\"stan\",zeropad(timeMillis,6));\r",
+							"pm.environment.set(\"rrn\",zeropad(timeMillis,12));\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "Application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"mti\": \"0200\",\r\n    \"timeout\": 5000,\r\n    \"headers\": {\r\n        \"interchange\": \"{{interchange}}\"\r\n    },\r\n    \"body\": {\r\n        \"f2\": \"6060580012697806\",\r\n        \"f3\": \"391000\",\r\n        \"f4\": \"5000000\",\r\n        \"f7\": \"{{gmtTranDateTime}}\",\r\n        \"f11\": \"{{stan}}\",\r\n        \"f12\": \"{{localTime}}\",\r\n        \"f13\": \"{{localDate}}\",\r\n        \"f15\": \"{{localDate}}\",\r\n        \"f18\": \"6011\",\r\n        \"f22\": \"051\",\r\n        \"f32\": \"{{acq_id}}\",\r\n        \"f33\": \"{{frwd_id}}\",\r\n        \"f35\": \"{{track2}}\",\r\n        \"f37\": \"{{rrn}}\",\r\n        \"f41\": \"10000001\",\r\n        \"f42\": \"ATM JAG10000001\",\r\n        \"f43\": \"GATOT SUBROTO                    JBR IDN\",\r\n        \"f48\":\"                              1234567                                       \",\r\n        \"f49\": \"360\",\r\n        \"p52\":\"123456\",\r\n        \"f100\":\"097\",\r\n        \"f103\":\"7809981200998\",\r\n        \"f125\":\"2\",\r\n        \"f127\":\"542\"\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "{{url}}/call",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"call"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TransferBeneOnly",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"\r",
+							"function  formatDateComponent(value){\r",
+							"    if(value<10){\r",
+							"        return '0' + value;\r",
+							"    }\r",
+							"\r",
+							"    return value;\r",
+							"}\r",
+							"\r",
+							"\r",
+							"function zeropad(val,length){\r",
+							"    var padLength = length-val.length;\r",
+							"    if(padLength==0)return val;\r",
+							"    if(padLength<0){\r",
+							"        return val.substring(val.length-length,val.length);\r",
+							"    }\r",
+							"    var result = '';\r",
+							"    for(i=0;i<padLength;i++){\r",
+							"        result+='0';\r",
+							"    }\r",
+							"    return result + val;\r",
+							"}\r",
+							"\r",
+							"let current_date = new Date();\r",
+							"\r",
+							"let dtYyMMdd = (\"\" + current_date.getFullYear()).substring(2,4) + formatDateComponent(current_date.getMonth() + 1) + formatDateComponent(current_date.getDate());\r",
+							"let dtHHmmss = \"\" + formatDateComponent(current_date.getHours()) + formatDateComponent(current_date.getMinutes()) + formatDateComponent(current_date.getSeconds());\r",
+							"\r",
+							"\r",
+							"let gmtDateTime =\"\" + formatDateComponent(current_date.getUTCMonth() + 1) + formatDateComponent(current_date.getUTCDate()) + \r",
+							"                 formatDateComponent(current_date.getUTCHours()) +  formatDateComponent(current_date.getUTCMinutes()) +  formatDateComponent(current_date.getUTCSeconds());\r",
+							"\r",
+							"\r",
+							"let timeMillis = \"\" +  (current_date.getDate() * 24 * 60 * 60 * 1000 +   current_date.getHours() * 60 * 60 * 1000 +  current_date.getMinutes() * 60 * 1000 + current_date.getSeconds() * 1000 + current_date.getMilliseconds());\r",
+							"\r",
+							"\r",
+							"\r",
+							"var atc = pm.environment.get(\"atc\");\r",
+							"if(!atc){\r",
+							"    atc = 0;\r",
+							"}\r",
+							"atc++;\r",
+							"if(atc>65535){\r",
+							"    atc=1;\r",
+							"}\r",
+							"\r",
+							"pm.environment.set(\"atc\",atc);\r",
+							"\r",
+							"pm.environment.set(\"iccAtc\",zeropad(atc.toString(16),4));\r",
+							"pm.environment.set(\"gmtTranDateTime\",gmtDateTime);\r",
+							"pm.environment.set(\"fullDate\",dtYyMMdd);\r",
+							"pm.environment.set(\"localDate\",dtYyMMdd.substring(2,6));\r",
+							"pm.environment.set(\"localTime\",dtHHmmss);\r",
+							"\r",
+							"pm.environment.set(\"stan\",zeropad(timeMillis,6));\r",
+							"pm.environment.set(\"rrn\",zeropad(timeMillis,12));\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "Application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"mti\": \"0200\",\r\n    \"timeout\": 5000,\r\n    \"headers\": {\r\n        \"interchange\": \"{{interchange}}\"\r\n    },\r\n    \"body\": {\r\n        \"f2\": \"6060580012697806\",\r\n        \"f3\": \"391000\",\r\n        \"f4\": \"5000000\",\r\n        \"f7\": \"{{gmtTranDateTime}}\",\r\n        \"f11\": \"{{stan}}\",\r\n        \"f12\": \"{{localTime}}\",\r\n        \"f13\": \"{{localDate}}\",\r\n        \"f15\": \"{{localDate}}\",\r\n        \"f18\": \"6011\",\r\n        \"f22\": \"051\",\r\n        \"f32\": \"{{acq_id}}\",\r\n        \"f33\": \"{{frwd_id}}\",\r\n        \"f35\": \"{{track2}}\",\r\n        \"f37\": \"{{rrn}}\",\r\n        \"f41\": \"10000001\",\r\n        \"f42\": \"ATM JAG10000001\",\r\n        \"f43\": \"GATOT SUBROTO                    JBR IDN\",\r\n        \"f48\":\"Kristine Wiegand 2p7ijczuxyv  123456          RIRI KEPRI                    \",\r\n        \"f49\": \"360\",\r\n        \"p52\":\"123456\",\r\n        \"f100\":\"097\",\r\n        \"f103\":\"7809981200998\",\r\n        \"f125\":\"2\",\r\n        \"f127\":\"542\"\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "{{url}}/call",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"call"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

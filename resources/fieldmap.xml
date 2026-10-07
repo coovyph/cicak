@@ -1,0 +1,26 @@
+<field_map>
+<field id="BNF48S01">
+   <F48>
+     <F1/>
+   </F48>
+</field>
+<field id="BNF48S20">
+   <F48>
+     <TTL_20/>
+   </F48>
+</field>
+<field id="BNF48S22F06">
+   <F48>
+     <TTL_22>
+	    <TTL_06/>
+	 </TTL_22>
+   </F48>
+</field>
+<field id="BNF48S56F01">
+   <F48>
+     <TTL_56>
+	    <F1/>
+	 </TTL_56>
+   </F48>
+</field>
+</field_map>

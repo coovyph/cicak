@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding='iso-8859-1'?>
+<txnmgr name="${groupName}_tm"
+	class="org.jpos.transaction.TransactionManager" logger="Q2">
+	<property name="queue" value="${groupName}_queue" />
+	<property name="sessions" value="5" />
+	<property name="space" value="" />
+	<property name="recover" value="false" />
+
+	<participant class="com.cck.participant.TxGroupSelector"
+		logger="${groupName}_lg" realm="selector">
+		<property name="8301" value="success reply" />
+		<property name="8061" value="signon reply" />
+		<property name="8002" value="signoff reply" />
+		<property name="8161" value="keyrequest reply"/>
+		<property name="8163" value="keygen reply"/>
+	</participant>
+    <group name="keyrequest">
+       <participant name="key-req" class="com.gck.participant.alto.AltoB5KeyGenerationParticipant" 
+       logger="${groupName}_lg" realm="key-gen"/>
+    </group>
+    
+    <group name="keyrequest">
+       <participant name="key-req" class="com.gck.participant.alto.AltoB5KeyRequestParticipant" logger="${groupName}_lg" realm="key-req">
+          <property name="queue" value="${groupName}_queue"/>
+       </participant>
+    </group>
+	<group name="signoff">
+		<participant name="signoff"
+			class="com.gck.participant.SignonParticipant"
+			logger="${groupName}_lg" realm="signoff">
+			<property name="sign-on-mode" value="false" />
+		</participant>
+	</group>
+	<group name="signon">
+		<participant name="signon"
+			class="com.gck.participant.SignonParticipant"
+			logger="${groupName}_lg" realm="signon" />
+	</group>
+	<group name="success">
+		<participant name="success"
+			class="com.gck.participant.SuccessParticipant"
+			logger="${groupName}_lg" realm="success" />
+	</group>
+	<group name="reply">
+		<participant name="reply"
+			class="com.cck.participant.ReplyParticipant" logger="Q2"
+			realm="reply" />
+	</group>
+</txnmgr>

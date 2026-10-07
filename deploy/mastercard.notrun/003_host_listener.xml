@@ -1,0 +1,12 @@
+<server name="${groupName}_sock" class="org.jpos.q2.iso.QServer" logger="Q2">
+  <attr name="port" type="java.lang.Integer">8002</attr>
+  <!-- minimum sessions yang di handle oleh QServer -->
+  <attr name="minSessions" type="java.lang.Integer">1</attr>
+  <!-- maximum sessions yang di handle oleh QServer -->
+  <attr name="maxSessions" type="java.lang.Integer">100</attr>
+   <channel class="org.jpos.iso.channel.PostChannel" packager="org.jpos.iso.packager.GenericPackager" logger="Q2" realm="sock">
+      <property name="packager-config" value="resources/cfg/iso87master.xml" />
+  </channel>
+   <in>${groupName}_sock_in</in>
+  <out>${groupName}_sock_out</out> 
+</server>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<logger name="${groupName}_lg" class="org.jpos.q2.qbean.LoggerAdaptor">  
+  <log-listener class="com.cck.util.Log4JListener"/>
+</logger>
+

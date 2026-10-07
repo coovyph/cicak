@@ -1,0 +1,5 @@
+# mastercard field start with MF
+MF48:
+   S01: F48.F1
+   S22.F06: F48.TTL_22.TTL_06
+   

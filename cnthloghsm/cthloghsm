@@ -1,0 +1,58 @@
+| Date and Time | Type | Name                                                                                                                | Value | Description |
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|               |      |   -CryptoInfo (ARQC computation)                                                                                    |       |             |
+|               |      |      Current card model = '5434160910025839'                                                                        |       |             |
+|               |      |      Master Derivation Key taken from current Model = '404043434545464649494A4A4C4C4F4F'                            |       |             |
+|               |      |      cardType = 'MChip4'                                                                                            |       |             |
+|               |      |     -Key derivation Info from AC_MDK                                                                                |       |             |
+|               |      |        Derived key = 'BC83C27C322CC1FD918A02F2B0894623'                                                             |       |             |
+|               |      |        Master derivation key = '404043434545464649494A4A4C4C4F4F'                                                   |       |             |
+|               |      |        PAN = '5393710500968746'                                                                                     |       |             |
+|               |      |        Sequence number = '01'                                                                                       |       |             |
+|               |      |        Parity odd = 'True'                                                                                          |       |             |
+|               |      |     -Input data calculation                                                                                         |       |             |
+|               |      |        9F10 (issuer application data) with CVN 10 detected                                                          |       |             |
+|               |      |        Crypto specification version: MChip4                                                                         |       |             |
+|               |      |        Cryptogram version number: 10                                                                                |       |             |
+|               |      |        9F02: 000000000200                                                                                           |       |             |
+|               |      |        9F03 (default used): 000000000000                                                                            |       |             |
+|               |      |        9F1A: 0840                                                                                                   |       |             |
+|               |      |        95: 0000000000                                                                                               |       |             |
+|               |      |        5F2A: 0840                                                                                                   |       |             |
+|               |      |        9A: 251119                                                                                                   |       |             |
+|               |      |        9C: 00                                                                                                       |       |             |
+|               |      |        9F37: 42258890                                                                                               |       |             |
+|               |      |        82: 5C00                                                                                                     |       |             |
+|               |      |        9F36: 05AD                                                                                                   |       |             |
+|               |      |        9F10 (full tag): 0110A04301A400000000FFFFFFFFFFFFFFFF                                                        |       |             |
+|               |      |        9F10 (appended part): A04301A40000                                                                           |       |             |
+|               |      |        Input data result: 00000000020000000000000008400000000000084025111900422588905C0005ADA04301A40000            |       |             |
+|               |      |     -ARQC calculation                                                                                               |       |             |
+|               |      |        ATC: 05AD                                                                                                    |       |             |
+|               |      |        Crypto Version Number: 10                                                                                    |       |             |
+|               |      |        Key: BC83C27C322CC1FD918A02F2B0894623                                                                        |       |             |
+|               |      |        Input data: 00000000020000000000000008400000000000084025111900422588905C0005ADA04301A40000                   |       |             |
+|               |      |        M/Chip 4 Compute AC: (Mastercard) Session Key = 0DF72ABEDBA92619B561E4A174D86EC2                             |       |             |
+|               |      |        M/Chip 4 Compute AC: Data = 00000000020000000000000008400000000000084025111900422588905C0005ADA04301A4000080 |       |             |
+|               |      |        M/Chip 4 Compute AC: AC = 68C0F00002462442                                                                   |       |             |
+|               |      |        ARQC: 68C0F00002462442                                                                                       |       |             |
+
+
+
+DEST   S1R^ARAM^01        ( STA 0 )
+
+              0: 5253 4D35 4B51 3131 5537 4445 3436 3741 [RSM5KQ11U7DE467A]
+             16: 3635 3745 4439 3232 4441 3837 4632 3033 [657ED922DA87F203]
+             32: 3341 3041 3235 3737 4493 7105 0096 8746 [3A0A2577D.q....F]
+             48: 0105 AD42 2588 9032 3800 0000 0002 0000 [...B%..28.......]
+             64: 0000 0000 0008 4000 0000 0000 0840 2511 [......@......@%.]
+             80: 1900 4225 8890 5C00 05AD A043 01A4 0000 [..B%..\....C....]
+             96: 803B 68C0 F000 0246 2442 0000           [.;h....F$B..]
+
+
+103006     16 25/11/19 09:45:16.29                           78849       0 - Sta
+
+       SOURCE S1R^ARAM^01        ( STA 0 )
+       DEST                      ( %177777 )
+
+              0: 5253 4D35 4B52 3030 563B B6E6 D2FA 0C13 [RSM5KR00V;......]

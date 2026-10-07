@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ich name="${groupName}" class="com.cck.bean.McmInterchange">
+		<property name="mux" value="${groupName}_mux"/>
+</ich>

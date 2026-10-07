@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mux name="${groupName}_mux" class="org.jpos.q2.iso.QMUX">
+	<in>${groupName}_sock_out</in>
+	<out>${groupName}_sock_in</out>
+	<ready>${groupName}_sock.ready</ready>
+	<request-listener
+		class="com.cck.listener.IcomingIso8583MuxListener" logger="Q2"
+		realm="mux-listener">
+		<property name="queue" value="${groupName}_queue" />
+		<property name="interchange" value="${groupName}"/>
+	</request-listener>
+</mux>

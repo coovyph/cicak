@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ich name="${groupName}" class="com.cck.bean.AlcornD2Interchange">
+		<property name="member-group-id" value="123456" />
+		<property name="financial-net-code" value="MAS"/>
+		<property name="inst-code" value="360003"/>
+		<property name="mux" value="${groupName}_mux"/>
+</ich>
