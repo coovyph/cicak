@@ -192,9 +192,42 @@ public class CicakMsgUtility {
 		}*/
 		return ISOUtil.hex2byte(sb.toString());
 	} 
-	
+
 	public static final byte[] createVisaChipCryptogramData(TLVList tlvList) {
+		//	9F02 + 9F03 + 9F1A + 95 + 5F2A + 9A + 9C + 9F37 + 82 + 9F36 + 9F10 (only CVR for CVN 10)
+
+		String tranAmountAuthorised = tlvList.getString(EMVTag._9F02_AMOUNT_AUTHORIZED_NUMERIC);
+		String tranAmountOther = tlvList.getString(EMVTag._9F03_AMOUNT_OTHER_NUMERIC);
+		String terminalCountryCode = tlvList.getString(EMVTag._9F1A_TERMINAL_COUNTRY_CODE);
+		String tvr = tlvList.getString(EMVTag._95_TERMINAL_VERIFICATION_RESULTS);
+		String tranCurrencyCode = tlvList.getString(EMVTag._5F2A_TRANSACTION_CURRENCY_CODE);
+		String tranDateLocal = tlvList.getString(EMVTag._9A_TRANSACTION_DATE);
+		String tranType=tlvList.getString(EMVTag._9C_TRANSACTION_TYPE);
+		String unpredictableNumber = tlvList.getString(EMVTag._9F37_UNPREDICTABLE_NUMBER);
+		String aip = tlvList.getString(EMVTag._82_APPLICATION_INTERCHANGE_PROFILE);
+		String atc = tlvList.getString(EMVTag._9F36_APPLICATION_TRANSACTION_COUNTER);
+		String iad = tlvList.getString(EMVTag._9F10_ISSUER_APPLICATION_DATA);
+
+		StringBuilder sb = new StringBuilder();
+		sb.append(tranAmountAuthorised);
+		sb.append(tranAmountOther);
+		sb.append(terminalCountryCode);
+		sb.append(tvr);
+		sb.append(tranCurrencyCode);
+		sb.append(tranDateLocal);
+		sb.append(tranType);
+		sb.append(unpredictableNumber);
+		sb.append(aip);
+		sb.append(atc);
+
+		if(iad!=null && "0A".equals(iad.substring(3,5))) {
+			//CVN 0A(10) only get CVR
+			sb.append(iad.substring(5));
+		}else{
+			sb.append(iad);
+		}
 		
+		return ISOUtil.hex2byte(sb.toString());
 	}
 
 	public static final byte[] createNSICCSCryptogramData(TLVList tlvList) {
