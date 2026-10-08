@@ -68,7 +68,6 @@ public class MastercardUtility {
 		byte[] upn = tlvList.getValue(EMVTag._9F37_UNPREDICTABLE_NUMBER);
 		
 		
-		System.out.println(ISOUtil.hexString(crypto));
 		byte[] result = adapter.generateARQC(MKDMethod.OPTION_A, SKDMethod.MCHIP, mkac, pan, panSeqNum, ISOUtil.hex2byte(atc), upn, crypto);
 
 		tlvList.append(EMVTag._9F26_APPLICATION_CRYPTOGRAM,result);

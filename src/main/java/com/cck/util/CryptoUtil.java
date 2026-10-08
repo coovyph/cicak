@@ -6,6 +6,7 @@ import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.AlgorithmParameterSpec;
 import java.util.Arrays;
+import java.util.HexFormat;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -14,11 +15,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.jpos.iso.ISOException;
-import org.jpos.iso.ISOUtil;
-import org.jpos.security.CipherMode;
-import org.jpos.security.jceadapter.JCEHandlerException;
-import org.jpos.tlv.TLVList;
+import com.cck.tlv.EmvFields;
 
 /**
  * NSICCS Crypto 
@@ -69,17 +66,20 @@ public class CryptoUtil {
 
 	private static final String HEX_PAD = "80";
 	private static final String HEX_NEXT_PAD = "0";
+	
+	public static final int CIPHER_MODE_ECB = 0;
+	public static final int CIPHER_MODE_CBC = 1;
 
-	static final byte[] fPaddingBlock = ISOUtil.hex2byte("FFFFFFFFFFFFFFFF");
+	static final byte[] fPaddingBlock = HexFormat.of().parseHex("FFFFFFFFFFFFFFFF");
 
 	private CryptoUtil() {
 		//do nothing
 	}
 
 	public static final byte[] constructNSICCSArqc(String pan,String panSequenceNo,
-			byte[] imkAc,TLVList tlvList)throws CryptoUtilException 
+			byte[] imkAc,EmvFields emvFields)throws CryptoUtilException 
 	{
-		byte[] atc = tlvList.getValue(EMVTag._9F36_APPLICATION_TRANSACTION_COUNTER);
+		byte[] atc = emvFields.getValue(EmvFields._9F36_APPLICATION_TRANSACTION_COUNTER);
 		//MKD Option : Option A
 		byte[] panpsn = formatPANPSNOptionA(pan, panSequenceNo);
 		Key mkac = deriveICCMasterKey(new SecretKeySpec(normalizeKeyBytes(imkAc), ALG_TRIPLE_DES), panpsn);
@@ -88,14 +88,14 @@ public class CryptoUtil {
 		mkac = deriveCommonSK_AC(mkac,atc);
 
 		//a authData
-		byte[] authData = createNsiccsCrytogramAuthData(tlvList); 
+		byte[] authData = createNsiccsCrytogramAuthData(emvFields); 
 
 		return calculateMACISO9797Alg3(mkac, authData);
 	}
 
 
 	public static final byte[] constructVchipArqc(String pan,String panSequenceNo,
-			byte[] imkAc,TLVList tlvList)throws CryptoUtilException 
+			byte[] imkAc,EmvFields emvFields)throws CryptoUtilException 
 	{
 
 		//MKD Option : Option A
@@ -104,28 +104,27 @@ public class CryptoUtil {
 
 
 		//a authData
-		byte[] authData = createVchipAuthData(tlvList); 
+		byte[] authData = createVchipAuthData(emvFields); 
 
 
 		return calculateMACISO9797Alg3(mkac, authData);
 	}
+	
+	private static final String constructBaseAuthData(EmvFields emvFields) {
+		String tranAmountAuthorised = emvFields.getString(EmvFields._9F02_AMOUNT_AUTHORIZED_NUMERIC);
 
-	private static final byte[] createMchipAuthData(TLVList tlvList) {
-		String tranAmountAuthorised = tlvList.getString(EMVTag._9F02_AMOUNT_AUTHORIZED_NUMERIC);
-
-		String tranAmountOther = tlvList.getString(EMVTag._9F03_AMOUNT_OTHER_NUMERIC);
+		String tranAmountOther = emvFields.getString(EmvFields._9F03_AMOUNT_OTHER_NUMERIC);
 		if(tranAmountOther==null) tranAmountOther = "000000000000";
 
-		String terminalCountryCode = tlvList.getString(EMVTag._9F1A_TERMINAL_COUNTRY_CODE);
-		String tvr = tlvList.getString(EMVTag._95_TERMINAL_VERIFICATION_RESULTS);
-		String tranCurrencyCode = tlvList.getString(EMVTag._5F2A_TRANSACTION_CURRENCY_CODE);
-		String tranDateLocal = tlvList.getString(EMVTag._9A_TRANSACTION_DATE);
-		String tranType=tlvList.getString(EMVTag._9C_TRANSACTION_TYPE);
+		String terminalCountryCode = emvFields.getString(EmvFields._9F1A_TERMINAL_COUNTRY_CODE);
+		String tvr = emvFields.getString(EmvFields._95_TERMINAL_VERIFICATION_RESULTS);
+		String tranCurrencyCode = emvFields.getString(EmvFields._5F2A_TRANSACTION_CURRENCY_CODE);
+		String tranDateLocal = emvFields.getString(EmvFields._9A_TRANSACTION_DATE);
+		String tranType=emvFields.getString(EmvFields._9C_TRANSACTION_TYPE);
 
-		String 	unpredictableNumber = tlvList.getString(EMVTag._9F37_UNPREDICTABLE_NUMBER);
-		String 	aip = tlvList.getString(EMVTag._82_APPLICATION_INTERCHANGE_PROFILE);
-		String atc = tlvList.getString(EMVTag._9F36_APPLICATION_TRANSACTION_COUNTER);
-		String iad = tlvList.getString(EMVTag._9F10_ISSUER_APPLICATION_DATA);
+		String 	unpredictableNumber = emvFields.getString(EmvFields._9F37_UNPREDICTABLE_NUMBER);
+		String 	aip = emvFields.getString(EmvFields._82_APPLICATION_INTERCHANGE_PROFILE);
+		String atc = emvFields.getString(EmvFields._9F36_APPLICATION_TRANSACTION_COUNTER);
 
 		StringBuilder sb = new StringBuilder();
 		sb.append(tranAmountAuthorised);
@@ -138,19 +137,28 @@ public class CryptoUtil {
 		sb.append(unpredictableNumber);
 		sb.append(aip);
 		sb.append(atc);
+		
+		return sb.toString();
+	}
+
+	private static final byte[] createMchipAuthData(EmvFields emvFields) {
+		String iad = emvFields.getString(EmvFields._9F10_ISSUER_APPLICATION_DATA);
+
+		StringBuilder sb = new StringBuilder();
+		sb.append(constructBaseAuthData(emvFields));
 
 		if(iad!=null) {
 			sb.append(iad.substring(4,16));
 		}
 		sb.append(80);
 
-		return ISOUtil.hex2byte(sb.toString());
+		return HexFormat.of().parseHex(sb.toString());
 	}
 
 	public static final byte[] constructMchipArqc(String pan,String panSequenceNo,
-			byte[] imkAc,TLVList tlvList)throws CryptoUtilException {
-		byte[] atc = tlvList.getValue(EMVTag._9F36_APPLICATION_TRANSACTION_COUNTER);
-		byte[] upn = tlvList.getValue(EMVTag._9F37_UNPREDICTABLE_NUMBER);
+		byte[] imkAc,EmvFields emvFields)throws CryptoUtilException {
+		byte[] atc = emvFields.getValue(EmvFields._9F36_APPLICATION_TRANSACTION_COUNTER);
+		byte[] upn = emvFields.getValue(EmvFields._9F37_UNPREDICTABLE_NUMBER);
 
 		//MKD Option : Option A
 		byte[] panpsn = formatPANPSNOptionA(pan, panSequenceNo);
@@ -159,69 +167,31 @@ public class CryptoUtil {
 		//SKD Method : MCHIP
 		mkac = deriveSK_MK(mkac,atc,upn);
 
-		byte[] authData = createMchipAuthData(tlvList); 
+		byte[] authData = createMchipAuthData(emvFields); 
 
 		return calculateMACISO9797Alg3(mkac, authData);
 	}
 
 
-	private static final byte[] createVchipAuthData(TLVList tlvList) {
-		String tranAmountAuthorised = tlvList.getString(EMVTag._9F02_AMOUNT_AUTHORIZED_NUMERIC);
-		String tranAmountOther = tlvList.getString(EMVTag._9F03_AMOUNT_OTHER_NUMERIC);
-		String terminalCountryCode = tlvList.getString(EMVTag._9F1A_TERMINAL_COUNTRY_CODE);
-		String tranCurrencyCode = tlvList.getString(EMVTag._5F2A_TRANSACTION_CURRENCY_CODE);
-		String tvr = tlvList.getString(EMVTag._95_TERMINAL_VERIFICATION_RESULTS);
-		String tranDateLocal = tlvList.getString(EMVTag._9A_TRANSACTION_DATE);
-		String tranType=tlvList.getString(EMVTag._9C_TRANSACTION_TYPE);
-		String unpredictableNumber = tlvList.getString(EMVTag._9F37_UNPREDICTABLE_NUMBER);
-		String aip = tlvList.getString(EMVTag._82_APPLICATION_INTERCHANGE_PROFILE);
-		String atc = tlvList.getString(EMVTag._9F36_APPLICATION_TRANSACTION_COUNTER);
-		String iad = tlvList.getString(EMVTag._9F10_ISSUER_APPLICATION_DATA);
+	private static final byte[] createVchipAuthData(EmvFields emvFields) {
+		String iad = emvFields.getString(EmvFields._9F10_ISSUER_APPLICATION_DATA);
 
 		StringBuilder sb = new StringBuilder();
-		sb.append(tranAmountAuthorised);
-		sb.append(tranAmountOther);
-		sb.append(terminalCountryCode);
-		sb.append(tvr);
-		sb.append(tranCurrencyCode);
-		sb.append(tranDateLocal);
-		sb.append(tranType);
-		sb.append(unpredictableNumber);
-		sb.append(aip);
-		sb.append(atc);
+		sb.append(constructBaseAuthData(emvFields));
 		if(iad!=null && "0A".equals(iad.substring(4,6))) {
 			//CVN 10 (0A) only use the CVR
 			sb.append(iad.substring(6));
 		}else {
 			sb.append(iad);
 		}
-		return ISOUtil.hex2byte(sb.toString());
+		return StringUtils.parseHex(sb.toString());
 	} 
 
-	private static final byte[] createNsiccsCrytogramAuthData(TLVList tlvList) {
-		String tranAmountAuthorised = tlvList.getString(EMVTag._9F02_AMOUNT_AUTHORIZED_NUMERIC);
-		String tranAmountOther = tlvList.getString(EMVTag._9F03_AMOUNT_OTHER_NUMERIC);
-		String terminalCountryCode = tlvList.getString(EMVTag._9F1A_TERMINAL_COUNTRY_CODE);
-		String tranCurrencyCode = tlvList.getString(EMVTag._5F2A_TRANSACTION_CURRENCY_CODE);
-		String tvr = tlvList.getString(EMVTag._95_TERMINAL_VERIFICATION_RESULTS);
-		String tranDateLocal = tlvList.getString(EMVTag._9A_TRANSACTION_DATE);
-		String tranType=tlvList.getString(EMVTag._9C_TRANSACTION_TYPE);
-		String unpredictableNumber = tlvList.getString(EMVTag._9F37_UNPREDICTABLE_NUMBER);
-		String aip = tlvList.getString(EMVTag._82_APPLICATION_INTERCHANGE_PROFILE);
-		String atc = tlvList.getString(EMVTag._9F36_APPLICATION_TRANSACTION_COUNTER);
-		String iad = tlvList.getString(EMVTag._9F10_ISSUER_APPLICATION_DATA);
+	private static final byte[] createNsiccsCrytogramAuthData(EmvFields emvFields) {
+		String iad = emvFields.getString(EmvFields._9F10_ISSUER_APPLICATION_DATA);
 
 		StringBuilder sb = new StringBuilder();
-		sb.append(tranAmountAuthorised);
-		sb.append(tranAmountOther);
-		sb.append(terminalCountryCode);
-		sb.append(tvr);
-		sb.append(tranCurrencyCode);
-		sb.append(tranDateLocal);
-		sb.append(tranType);
-		sb.append(unpredictableNumber);
-		sb.append(aip);
-		sb.append(atc);
+		sb.append(constructBaseAuthData(emvFields));
 		sb.append(iad);
 		sb.append(HEX_PAD);
 
@@ -234,7 +204,7 @@ public class CryptoUtil {
 				sb.append(HEX_NEXT_PAD);
 			}
 		}
-		return ISOUtil.hex2byte(sb.toString());
+		return StringUtils.parseHex(sb.toString());
 	} 
 	/**
 	 * Prepare 8-bytes data from PAN and PAN Sequence Number (Option A)
@@ -249,8 +219,8 @@ public class CryptoUtil {
 	private static byte[] formatPANPSNOptionA(String pan, String psn){
 		if ( pan.length() < 14 )
 			try {
-				pan = ISOUtil.zeropad(pan, 14);
-			} catch( ISOException ex ) {} //NOPMD: ISOException condition is checked before.
+				pan = StringUtils.padleft(pan, 14, '0');
+			} catch( StringUtilsException ex ) {} //NOPMD: ISOException condition is checked before.
 		byte[] b = preparePANPSN(pan, psn);
 		return Arrays.copyOfRange(b, b.length-8, b.length);
 	}
@@ -277,7 +247,7 @@ public class CryptoUtil {
 		String ret = pan + psn;
 		//convert digits to bytes and padd with "0"
 		//to left for ensure even number of digits
-		return ISOUtil.hex2byte(ret);
+		return StringUtils.parseHex(ret);
 	}
 
 	/**
@@ -303,7 +273,7 @@ public class CryptoUtil {
 
 
 		//derived key
-		byte[] mk = ISOUtil.concat(l,r);
+		byte[] mk = StringUtils.concatBytes(l,r);
 		//fix DES parity of key 
 		//i dont have real explanation of this algorithm yet
 		adjustDESParity(mk);
@@ -342,7 +312,7 @@ public class CryptoUtil {
 	 * @param mksm unique ICC Master Key for Secure Messaging
 	 * @param rand Application Cryptogram as diversification value
 	 * @return derived 16-bytes Session Key with adjusted DES parity
-	 * @throws JCEHandlerException
+	 *
 	 */
 	private static Key deriveCommonSK_SM(Key mksm, byte[] rand) throws CryptoUtilException {
 		byte[] rl = Arrays.copyOf(rand,8);
@@ -365,11 +335,11 @@ public class CryptoUtil {
 
 
 	public static final byte[] encryptECB(byte[] data,Key key)throws CryptoUtilException{
-		return doCryptStuff(data, key,Cipher.ENCRYPT_MODE , CipherMode.ECB, null);
+		return doCryptStuff(data, key,Cipher.ENCRYPT_MODE , CIPHER_MODE_ECB, null);
 	}
 
 	public static final byte[] decryptECB(byte[] data,Key key)throws CryptoUtilException{
-		return doCryptStuff(data, key,Cipher.DECRYPT_MODE , CipherMode.ECB, null);
+		return doCryptStuff(data, key,Cipher.DECRYPT_MODE , CIPHER_MODE_ECB, null);
 	}
 
 
@@ -386,14 +356,18 @@ public class CryptoUtil {
 	}
 
 	private static byte[] doCryptStuff(byte[] data, Key key, int direction
-			,CipherMode cipherMode, byte[] iv) throws CryptoUtilException{
+			,int cipherMode, byte[] iv) throws CryptoUtilException{
 		byte[] result;
 		StringBuilder sbTransformation = new StringBuilder();
 		sbTransformation.append(key.getAlgorithm());
 
 		if(ALG_TRIPLE_DES.startsWith(key.getAlgorithm())) {
 			sbTransformation.append("/");
-			sbTransformation.append(cipherMode.toString());
+			if(cipherMode == CIPHER_MODE_ECB) {
+				sbTransformation.append("ECB");
+			}else {
+				sbTransformation.append("CBC");
+			}
 			sbTransformation.append("/");
 			sbTransformation.append(DES_NO_PADDING);
 		}
@@ -402,11 +376,11 @@ public class CryptoUtil {
 		try {
 			//Just trust the java library for JCE provider
 			Cipher c1 = Cipher.getInstance(sbTransformation.toString());
-			if (cipherMode != CipherMode.ECB)
+			if (cipherMode != CIPHER_MODE_ECB)
 				aps = new IvParameterSpec(iv);
 			c1.init(direction, key, aps);
 			result = c1.doFinal(data);
-			if (cipherMode != CipherMode.ECB)
+			if (cipherMode != CIPHER_MODE_ECB)
 				System.arraycopy(result, result.length-8, iv, 0, iv.length);
 		}catch(NoSuchPaddingException | NoSuchAlgorithmException | 
 				BadPaddingException | InvalidKeyException |
@@ -438,7 +412,6 @@ public class CryptoUtil {
 	 * @param key DES double length key
 	 * @param d data to calculate MAC on it
 	 * @return 8 byte of mac value
-	 * @throws JCEHandlerException
 	 */
 	private static byte[] calculateMACISO9797Alg3(Key key, byte[] d) throws CryptoUtilException {
 		Key skl = new SecretKeySpec(Arrays.copyOfRange(key.getEncoded(), 0, 8), ALG_DES) ;
@@ -451,12 +424,12 @@ public class CryptoUtil {
 			d = t;
 		}
 		//MAC_CBC alg 3
-		byte[] y_i = ISOUtil.hex2byte("0000000000000000");
+		byte[] y_i = StringUtils.parseHex("0000000000000000");
 		byte[] yi  = new byte[8];
 
 		for ( int i=0;i<d.length;i+=8){
 			System.arraycopy(d, i, yi, 0, yi.length);
-			y_i = encryptECB(ISOUtil.xor(yi, y_i), skl);
+			y_i = encryptECB(StringUtils.xor(yi, y_i), skl);
 		}
 		y_i = decryptECB(y_i, skr);
 		y_i = encryptECB(y_i, skl);

@@ -929,6 +929,8 @@ public class GeckoSecurityModule extends BaseSMAdapter {
 
 
 		byte[] panpsn = formatPANPSN(accountNo, accntSeqNo, mkdm);
+		
+		
 		Key mkac = deriveICCMasterKey(decryptFromLMK(imkac), panpsn);
 
 		//System.out.println("MKAC : " + ISOUtil.hexString(mkac.getEncoded()));
