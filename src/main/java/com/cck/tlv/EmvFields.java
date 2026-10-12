@@ -184,7 +184,7 @@ public class EmvFields {
 		}
 		setField(id, StringUtils.parseHex(value));
 	}
-	
+
 	public Set<Integer> keys(){
 		return this.tlvFields.keySet();
 	}
@@ -197,6 +197,17 @@ public class EmvFields {
 		byte[] valueBytes = getValue(id);
 		if(valueBytes == null)return null;
 		return StringUtils.toHex(valueBytes);
+	}
+
+	public void remove(String tag) {
+		try {
+			remove(Integer.parseInt(tag,16));
+		}catch(NumberFormatException ne) {
+			//ignore the exception
+		}
+	}
+	public void remove(Integer id) {
+		this.tlvFields.remove(id);
 	}
 
 	public void unpack(byte[] rawBytes){
@@ -213,14 +224,14 @@ public class EmvFields {
 				tag = (int)rawBytes[offset] & 0xFF;
 				offset++;
 			}
-			
+
 			//read the length
 			length = (int)rawBytes[offset] & 0xFF;
 			offset++;
 			value = new byte[length];
 			System.arraycopy(rawBytes, offset, value, 0, length);
 			offset+=length;
-			
+
 			setField(Integer.valueOf(tag), value);			
 		}
 	}

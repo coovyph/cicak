@@ -66,23 +66,70 @@ public class CryptoUtil {
 
 	private static final String HEX_PAD = "80";
 	private static final String HEX_NEXT_PAD = "0";
-	
+
 	public static final int CIPHER_MODE_ECB = 0;
 	public static final int CIPHER_MODE_CBC = 1;
 
+
 	static final byte[] fPaddingBlock = HexFormat.of().parseHex("FFFFFFFFFFFFFFFF");
+
+	static final byte[] EMPTY_ARC = {0x00,0x00};
 
 	private CryptoUtil() {
 		//do nothing
 	}
 
+	public static final byte[] constructNSICCSArpc(String pan,String panSequenceNo,
+			byte[] imkAc,EmvFields emvFields,String arc)throws CryptoCckException{
+		byte[] atc = emvFields.getValue(EmvFields._9F36_APPLICATION_TRANSACTION_COUNTER);
+		byte[] arqc = emvFields.getValue(EmvFields._9F26_APPLICATION_CRYPTOGRAM);
+		byte[] panpsn = formatPANPSNOptionA(pan, panSequenceNo);
+		Key mkac = deriveICCMasterKey(new SecretKeySpec(imkAc, ALG_TRIPLE_DES), panpsn);
+		//SKD Method : EMV_CSKD
+		mkac = deriveCommonSK_AC(mkac,atc);
+
+		//a authData
+		byte[] authData = createNsiccsCrytogramAuthData(emvFields); 
+
+		return calculateARPC(mkac, arqc, arc.getBytes(),authData);
+	}
+
+	public static final byte[] constructVCHIPArpc(String pan,String panSequenceNo,
+			byte[] imkAc,EmvFields emvFields,String arc) throws CryptoCckException{
+		byte[] arqc = emvFields.getValue(EmvFields._9F26_APPLICATION_CRYPTOGRAM);
+		//MKD Option : Option A
+		byte[] panpsn = formatPANPSNOptionA(pan, panSequenceNo);
+		Key mkac = deriveICCMasterKey(new SecretKeySpec(imkAc, ALG_TRIPLE_DES), panpsn);
+
+
+		//a authData
+		byte[] authData = createVchipAuthData(emvFields); 
+
+
+		return calculateARPC(mkac, arqc, arc.getBytes(),authData);
+	}
+
+	private static final byte[] calculateARPC(Key skarpc, byte[] arqc,byte[] arc, byte[] propAuthData) throws CryptoCckException {
+
+		byte[] b = new byte[8];
+
+		System.arraycopy(arc, arc.length-2, b, 0, 2);
+		b = StringUtils.xor(arqc, b);
+		return  encryptECB(b, skarpc);
+
+	}
+
+
+
+
+
 	public static final byte[] constructNSICCSArqc(String pan,String panSequenceNo,
-			byte[] imkAc,EmvFields emvFields)throws CryptoUtilException 
+			byte[] imkAc,EmvFields emvFields)throws CryptoCckException 
 	{
 		byte[] atc = emvFields.getValue(EmvFields._9F36_APPLICATION_TRANSACTION_COUNTER);
 		//MKD Option : Option A
 		byte[] panpsn = formatPANPSNOptionA(pan, panSequenceNo);
-		Key mkac = deriveICCMasterKey(new SecretKeySpec(normalizeKeyBytes(imkAc), ALG_TRIPLE_DES), panpsn);
+		Key mkac = deriveICCMasterKey(new SecretKeySpec(imkAc, ALG_TRIPLE_DES), panpsn);
 
 		//SKD Method : EMV_CSKD
 		mkac = deriveCommonSK_AC(mkac,atc);
@@ -95,12 +142,12 @@ public class CryptoUtil {
 
 
 	public static final byte[] constructVchipArqc(String pan,String panSequenceNo,
-			byte[] imkAc,EmvFields emvFields)throws CryptoUtilException 
+			byte[] imkAc,EmvFields emvFields)throws CryptoCckException 
 	{
 
 		//MKD Option : Option A
 		byte[] panpsn = formatPANPSNOptionA(pan, panSequenceNo);
-		Key mkac = deriveICCMasterKey(new SecretKeySpec(normalizeKeyBytes(imkAc), ALG_TRIPLE_DES), panpsn);
+		Key mkac = deriveICCMasterKey(new SecretKeySpec(imkAc, ALG_TRIPLE_DES), panpsn);
 
 
 		//a authData
@@ -109,7 +156,7 @@ public class CryptoUtil {
 
 		return calculateMACISO9797Alg3(mkac, authData);
 	}
-	
+
 	private static final String constructBaseAuthData(EmvFields emvFields) {
 		String tranAmountAuthorised = emvFields.getString(EmvFields._9F02_AMOUNT_AUTHORIZED_NUMERIC);
 
@@ -137,7 +184,7 @@ public class CryptoUtil {
 		sb.append(unpredictableNumber);
 		sb.append(aip);
 		sb.append(atc);
-		
+
 		return sb.toString();
 	}
 
@@ -156,13 +203,13 @@ public class CryptoUtil {
 	}
 
 	public static final byte[] constructMchipArqc(String pan,String panSequenceNo,
-		byte[] imkAc,EmvFields emvFields)throws CryptoUtilException {
+			byte[] imkAc,EmvFields emvFields)throws CryptoCckException {
 		byte[] atc = emvFields.getValue(EmvFields._9F36_APPLICATION_TRANSACTION_COUNTER);
 		byte[] upn = emvFields.getValue(EmvFields._9F37_UNPREDICTABLE_NUMBER);
 
 		//MKD Option : Option A
 		byte[] panpsn = formatPANPSNOptionA(pan, panSequenceNo);
-		Key mkac = deriveICCMasterKey(new SecretKeySpec(normalizeKeyBytes(imkAc), ALG_TRIPLE_DES), panpsn);
+		Key mkac = deriveICCMasterKey(new SecretKeySpec(imkAc, ALG_TRIPLE_DES), panpsn);
 
 		//SKD Method : MCHIP
 		mkac = deriveSK_MK(mkac,atc,upn);
@@ -172,6 +219,18 @@ public class CryptoUtil {
 		return calculateMACISO9797Alg3(mkac, authData);
 	}
 
+	public static final byte[] constructMchipArpc(String pan,String panSequenceNo,
+			byte[] imkAc,EmvFields emvFields)throws CryptoCckException {
+		byte[] arqc = emvFields.getValue(EmvFields._9F26_APPLICATION_CRYPTOGRAM);
+
+		//MKD Option : Option A
+		byte[] panpsn = formatPANPSNOptionA(pan, panSequenceNo);
+		Key mkac = deriveICCMasterKey(new SecretKeySpec(imkAc, ALG_TRIPLE_DES), panpsn);
+
+		byte[] authData = createMchipAuthData(emvFields); 
+
+		return calculateARPC(mkac, arqc,  EMPTY_ARC,authData);
+	}
 
 	private static final byte[] createVchipAuthData(EmvFields emvFields) {
 		String iad = emvFields.getString(EmvFields._9F10_ISSUER_APPLICATION_DATA);
@@ -256,10 +315,10 @@ public class CryptoUtil {
 	 * @param imk
 	 * @param panpsn
 	 * @return
-	 * @throws CryptoUtilException
+	 * @throws CryptoCckException
 	 */
 	private static Key deriveICCMasterKey(Key imk, byte[] panpsn)
-			throws CryptoUtilException {
+			throws CryptoCckException {
 
 		byte[] l = Arrays.copyOfRange(panpsn, 0, 8);
 		//left part of derived key
@@ -279,11 +338,11 @@ public class CryptoUtil {
 		adjustDESParity(mk);
 
 		//form JCE Tripple-DES Key
-		return new SecretKeySpec(normalizeKeyBytes(mk), ALG_TRIPLE_DES);
+		return new SecretKeySpec(mk, ALG_TRIPLE_DES);
 	}
 
 
-	private static Key deriveCommonSK_AC(Key mkac, byte[] atc) throws CryptoUtilException {
+	private static Key deriveCommonSK_AC(Key mkac, byte[] atc) throws CryptoCckException {
 
 		byte[] r = new byte[8];
 		System.arraycopy(atc, atc.length-2, r, 0, 2);
@@ -291,7 +350,7 @@ public class CryptoUtil {
 		return deriveCommonSK_SM(mkac, r);
 	}
 
-	private static Key deriveSK_MK(Key mkac, byte[] atc, byte[] upn) throws CryptoUtilException {
+	private static Key deriveSK_MK(Key mkac, byte[] atc, byte[] upn) throws CryptoCckException {
 
 		byte[] r = new byte[8];
 		System.arraycopy(atc, atc.length-2, r, 0, 2);
@@ -314,7 +373,7 @@ public class CryptoUtil {
 	 * @return derived 16-bytes Session Key with adjusted DES parity
 	 *
 	 */
-	private static Key deriveCommonSK_SM(Key mksm, byte[] rand) throws CryptoUtilException {
+	private static Key deriveCommonSK_SM(Key mksm, byte[] rand) throws CryptoCckException {
 		byte[] rl = Arrays.copyOf(rand,8);
 
 		rl[2] = (byte)0xf0;
@@ -334,11 +393,11 @@ public class CryptoUtil {
 	}
 
 
-	public static final byte[] encryptECB(byte[] data,Key key)throws CryptoUtilException{
+	public static final byte[] encryptECB(byte[] data,Key key)throws CryptoCckException{
 		return doCryptStuff(data, key,Cipher.ENCRYPT_MODE , CIPHER_MODE_ECB, null);
 	}
 
-	public static final byte[] decryptECB(byte[] data,Key key)throws CryptoUtilException{
+	public static final byte[] decryptECB(byte[] data,Key key)throws CryptoCckException{
 		return doCryptStuff(data, key,Cipher.DECRYPT_MODE , CIPHER_MODE_ECB, null);
 	}
 
@@ -355,12 +414,18 @@ public class CryptoUtil {
 		return encoded;
 	}
 
+	private static Key normalizeDesKey(Key key) {
+		byte[] newKeyBytes = normalizeKeyBytes(key.getEncoded());
+		return new SecretKeySpec(newKeyBytes, key.getAlgorithm());
+	}
+
 	private static byte[] doCryptStuff(byte[] data, Key key, int direction
-			,int cipherMode, byte[] iv) throws CryptoUtilException{
+			,int cipherMode, byte[] iv) throws CryptoCckException{
 		byte[] result;
 		StringBuilder sbTransformation = new StringBuilder();
 		sbTransformation.append(key.getAlgorithm());
 
+		key = normalizeDesKey(key);
 		if(ALG_TRIPLE_DES.startsWith(key.getAlgorithm())) {
 			sbTransformation.append("/");
 			if(cipherMode == CIPHER_MODE_ECB) {
@@ -386,7 +451,7 @@ public class CryptoUtil {
 				BadPaddingException | InvalidKeyException |
 				InvalidAlgorithmParameterException| IllegalBlockSizeException e) {
 			e.printStackTrace();
-			throw new CryptoUtilException(e);
+			throw new CryptoCckException(e);
 		}
 		return result;
 	}
@@ -413,7 +478,7 @@ public class CryptoUtil {
 	 * @param d data to calculate MAC on it
 	 * @return 8 byte of mac value
 	 */
-	private static byte[] calculateMACISO9797Alg3(Key key, byte[] d) throws CryptoUtilException {
+	private static byte[] calculateMACISO9797Alg3(Key key, byte[] d) throws CryptoCckException {
 		Key skl = new SecretKeySpec(Arrays.copyOfRange(key.getEncoded(), 0, 8), ALG_DES) ;
 		Key skr = new SecretKeySpec(Arrays.copyOfRange(key.getEncoded(), 8, 16), ALG_DES) ; 
 

@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import org.jpos.iso.ISOMsg;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,7 @@ import com.cck.tlv.EmvFields;
 import com.cck.util.CryptoUtil;
 import com.cck.util.StringUtils;
 
-public class NSICCSFieldGeneratorTest {
+public class NsiccsFieldGeneratorTest {
 	@Test
 	public void test()throws Exception {
 
@@ -26,7 +27,7 @@ public class NSICCSFieldGeneratorTest {
 
 
 
-		NSICCSFieldGenerator nif = new NSICCSFieldGenerator(ksm, bm);
+		NsiccsFieldGenerator nif = new NsiccsFieldGenerator(new Random(),ksm, bm);
 
 
 		ISOMsg msg = new ISOMsg();

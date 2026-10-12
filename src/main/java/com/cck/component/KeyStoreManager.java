@@ -350,8 +350,6 @@ public class KeyStoreManager {
 				setVariant(temp);
 			}
 
-
-
 			setParent(fields[3]);
 			setValue(fields[4]);
 			setKeyCheck(fields[5]);
